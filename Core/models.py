@@ -25,3 +25,29 @@ class Lead(models.Model):
 
     def __str__(self):
         return self.name
+
+class FollowUp(models.Model):
+    lead = models.ForeignKey(Lead,on_delete=models.CASCADE)
+    date = models.DateField(auto_now_add=True)
+    title = models.CharField(max_length=50)
+    details = models.TextField(null=True,blank=True)
+
+    def __str__(self):
+        return f'{self.lead} / {self.title}'
+
+class Booking(models.Model):
+    date = models.DateField(auto_now_add=True)
+    status = models.CharField(max_length=25,default='confirmed')
+
+    lead = models.ForeignKey(Lead,on_delete=models.CASCADE)
+    students = models.IntegerField()
+    teachers = models.IntegerField()
+    visit_date = models.DateField()
+
+    time_arrival = models.TimeField(null=True,blank=True)
+    time_leave = models.TimeField(null=True,blank=True)
+
+    food = models.CharField(max_length=50,null=True,blank=True)
+
+    def __str__(self):
+        return self.lead.name

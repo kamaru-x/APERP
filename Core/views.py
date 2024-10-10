@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from Core.models import Department, Lead
+from Core.models import Department, Lead, FollowUp
 
 # Create your views here.
 
@@ -60,10 +60,12 @@ def add_lead(request):
 def view_lead(request,lid):
     departments = Department.objects.all()
     lead = Lead.objects.get(id=lid)
+    followups = FollowUp.objects.filter(lead=lead).order_by('-id')
     context = {
         'main' : 'leads',
         'departments' : departments,
-        'lead' : lead
+        'lead' : lead,
+        'followups' : followups
     }
     return render(request,'leads/lead-view.html',context)
 
@@ -109,3 +111,27 @@ def delete_lead(request,lid):
     lead.delete()
     messages.warning(request ,'Lead deleted successfully ... !')
     return redirect('leads')
+
+@login_required
+def add_followup(request,lid):
+    lead = Lead.objects.get(id=lid)
+
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        details = request.POST.get('details')
+
+        try:
+            FollowUp.objects.create(lead=lead,title=title,details=details)
+            messages.success(request,'follow up added successfully ... !')
+
+        except Exception as exception:
+            messages.warning(request,str(exception))
+
+    return redirect('view-lead',lid=lead.id)
+
+@login_required
+def delete_followup(request,fid):
+    followup = FollowUp.objects.get(id=fid)
+    lead = followup.lead
+    followup.delete()
+    return redirect('view-lead',lid=lead.id)

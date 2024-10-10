@@ -42,16 +42,16 @@
             <ul class="list-unstyled mb-4 mt-3">
                 <li class="d-flex align-items-center mb-3">
                     <i class="bx bx-user"></i><span class="fw-medium mx-2">Contact Name :</span>
-                    <span>Kamarudheen</span>
+                    <span>{{ lead.contact_name }}</span>
                 </li>
                 <li class="d-flex align-items-center mb-3">
                     <i class="bx bx-phone"></i><span class="fw-medium mx-2">Contact Number :</span>
-                    <span>(123) 456-7890</span>
+                    <span>{{ lead.contact_number }}</span>
                 </li>
-                <li class="d-flex align-items-center mb-3">
+                <!-- <li class="d-flex align-items-center mb-3">
                     <i class="bx bx-envelope"></i><span class="fw-medium mx-2">Email :</span>
-                    <span>john.doe@example.com</span>
-                </li>
+                    <span>connect@kamaru.me</span>
+                </li> -->
             </ul>
           </div>
         </div>
@@ -59,20 +59,20 @@
         <!-- Profile Overview -->
         <div class="card mb-4">
           <div class="card-body">
-            <small class="text-muted text-uppercase">Overview</small>
-            <ul class="list-unstyled mt-3 mb-0">
-              <li class="d-flex align-items-center mb-3">
-                <i class="bx bx-check"></i><span class="fw-medium mx-2">Task Compiled:</span>
-                <span>13.5k</span>
-              </li>
-              <li class="d-flex align-items-center mb-3">
-                <i class="bx bx-customize"></i><span class="fw-medium mx-2">Projects Compiled:</span>
-                <span>146</span>
-              </li>
-              <li class="d-flex align-items-center">
-                <i class="bx bx-user"></i><span class="fw-medium mx-2">Connections:</span> <span>897</span>
-              </li>
-            </ul>
+            <select class="form-control">
+              <option value="PENDING" class="bg-warning">PENDING</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="row">
+              <div class="d-grid gap-2 col-12 mx-auto">
+                <button class="btn btn-success btn" type="button">CONFIRM BOOKING</button>
+                <button class="btn btn-danger btn" type="button">MARK AS FAILED</button>
+              </div>
+            </div>
           </div>
         </div>
         <!--/ Profile Overview -->
@@ -82,80 +82,45 @@
         <!-- Payment Methods -->
         <div class="card card-action mb-4">
           <div class="card-header align-items-center">
-            <h5 class="card-action-title mb-0">Payment Methods</h5>
+            <h5 class="card-action-title mb-0">Follow ups</h5>
             <div class="card-action-element">
               <button
                 class="btn btn-primary btn-sm"
                 type="button"
                 data-bs-toggle="modal"
                 data-bs-target="#addNewCCModal">
-                <i class="bx bx-plus bx-xs me-1"></i>Add Card
+                <i class="bx bx-plus bx-xs me-1"></i>ADD FOLLOW UP
               </button>
             </div>
           </div>
           <div class="card-body">
             <div class="added-cards">
 
-              <div class="cardMaster border p-3 rounded mb-3">
-                <div class="d-flex justify-content-between flex-sm-row flex-column">
-                  <div class="card-information">
-                    <h6 class="mb-3">Kaith Morrison</h6>
-                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Hic vel, consequatur, fugit temporibus explicabo itaque nobis veniam repellat cupiditate, aliquid aperiam voluptatibus nemo mollitia quae consequuntur qui sed labore alias.</p>
-                  </div>
-                  <div class="d-flex flex-column text-start text-lg-end">
-                    <div class="d-flex order-sm-0 order-1">
-                      <button class="btn btn-danger">
-                        <i class="bx bx-trash-alt"></i>
-                      </button>
+              {% if followups %}
+                {% for followup in followups %}
+                  <div class="cardMaster border p-3 rounded mb-3">
+                    <div class="d-flex justify-content-between flex-sm-row flex-column">
+                      <div class="card-information">
+                        <h6 class="mb-3">{{ followup.title }}</h6>
+                        <p>{{ followup.details }}</p>
+                      </div>
+                      <div class="d-flex flex-column text-start text-lg-end">
+                        <div class="d-flex order-sm-0 order-1">
+                          <a href="{% url 'delete-followup' followup.id %}" class="btn btn-danger">
+                            <i class="bx bx-trash-alt"></i>
+                          </a>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
+                {% endfor %}
+              {% endif %}
 
               <div class="cardMaster border p-3 rounded mb-3">
                 <div class="d-flex justify-content-between flex-sm-row flex-column">
                   <div class="card-information">
-                    <h6 class="mb-3">Kaith Morrison</h6>
-                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Hic vel, consequatur, fugit temporibus explicabo itaque nobis veniam repellat cupiditate, aliquid aperiam voluptatibus nemo mollitia quae consequuntur qui sed labore alias.</p>
-                  </div>
-                  <div class="d-flex flex-column text-start text-lg-end">
-                    <div class="d-flex order-sm-0 order-1">
-                      <button class="btn btn-danger">
-                        <i class="bx bx-trash-alt"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="cardMaster border p-3 rounded mb-3">
-                <div class="d-flex justify-content-between flex-sm-row flex-column">
-                  <div class="card-information">
-                    <h6 class="mb-3">Kaith Morrison</h6>
-                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Hic vel, consequatur, fugit temporibus explicabo itaque nobis veniam repellat cupiditate, aliquid aperiam voluptatibus nemo mollitia quae consequuntur qui sed labore alias.</p>
-                  </div>
-                  <div class="d-flex flex-column text-start text-lg-end">
-                    <div class="d-flex order-sm-0 order-1">
-                      <button class="btn btn-danger">
-                        <i class="bx bx-trash-alt"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="cardMaster border p-3 rounded mb-3">
-                <div class="d-flex justify-content-between flex-sm-row flex-column">
-                  <div class="card-information">
-                    <h6 class="mb-3">Kaith Morrison</h6>
-                    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Hic vel, consequatur, fugit temporibus explicabo itaque nobis veniam repellat cupiditate, aliquid aperiam voluptatibus nemo mollitia quae consequuntur qui sed labore alias.</p>
-                  </div>
-                  <div class="d-flex flex-column text-start text-lg-end">
-                    <div class="d-flex order-sm-0 order-1">
-                      <button class="btn btn-danger">
-                        <i class="bx bx-trash-alt"></i>
-                      </button>
-                    </div>
+                    <h6 class="mb-3">Lead Generated</h6>
+                    <p>lead of {{ lead.name }} generated on {{ lead.date | date:'d M Y' }}</p>
                   </div>
                 </div>
               </div>
@@ -184,64 +149,19 @@
           <div class="modal-body">
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             <div class="text-center mb-4">
-              <h3>Add New Card</h3>
-              <p>Add new card to complete payment</p>
+              <h3>ADD FOLLOW UP</h3>
             </div>
-            <form id="addNewCCForm" class="row g-3" onsubmit="return false">
+            <form id="addNewCCForm" class="row g-3" method="post" action="{% url 'add-followup' lead.id %}">
+              {% csrf_token %}
               <div class="col-12">
-                <label class="form-label w-100" for="modalAddCard">Card Number</label>
+                <label class="form-label">Title</label>
                 <div class="input-group input-group-merge">
-                  <input
-                    id="modalAddCard"
-                    name="modalAddCard"
-                    class="form-control credit-card-mask"
-                    type="text"
-                    placeholder="1356 3215 6548 7898"
-                    aria-describedby="modalAddCard2" />
-                  <span class="input-group-text cursor-pointer p-1" id="modalAddCard2"
-                    ><span class="card-type"></span
-                  ></span>
+                  <input name="title" class="form-control credit-card-mask" type="text" placeholder="Enter follow up title" aria-describedby="modalAddCard2" />
                 </div>
               </div>
-              <div class="col-12 col-md-6">
-                <label class="form-label" for="modalAddCardName">Name</label>
-                <input type="text" id="modalAddCardName" class="form-control" placeholder="John Doe" />
-              </div>
-              <div class="col-6 col-md-3">
-                <label class="form-label" for="modalAddCardExpiryDate">Exp. Date</label>
-                <input
-                  type="text"
-                  id="modalAddCardExpiryDate"
-                  class="form-control expiry-date-mask"
-                  placeholder="MM/YY" />
-              </div>
-              <div class="col-6 col-md-3">
-                <label class="form-label" for="modalAddCardCvv">CVV Code</label>
-                <div class="input-group input-group-merge">
-                  <input
-                    type="text"
-                    id="modalAddCardCvv"
-                    class="form-control cvv-code-mask"
-                    maxlength="3"
-                    placeholder="654" />
-                  <span class="input-group-text cursor-pointer" id="modalAddCardCvv2"
-                    ><i
-                      class="bx bx-help-circle text-muted"
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
-                      title="Card Verification Value"></i
-                  ></span>
-                </div>
-              </div>
-              <div class="col-12">
-                <label class="switch">
-                  <input type="checkbox" class="switch-input" />
-                  <span class="switch-toggle-slider">
-                    <span class="switch-on"></span>
-                    <span class="switch-off"></span>
-                  </span>
-                  <span class="switch-label">Save card for future billing?</span>
-                </label>
+              <div class="col-12 col-md-12">
+                <label class="form-label">Details</label>
+                <textarea name="details" id="" class="form-control" rows="5" placeholder="Enter follow up details"></textarea>
               </div>
               <div class="col-12 text-center">
                 <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>
