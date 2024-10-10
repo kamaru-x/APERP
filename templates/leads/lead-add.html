@@ -1,0 +1,100 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="col-12">
+        <div class="card mb-4">
+            <h3 class="text-center fw-medium mt-5">ADD LEAD</h3>
+            <hr>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="mb-3 col-md-6">
+                            <label class="form-label">School Name</label>
+                            <input name="name" type="text" class="form-control" placeholder="Enter school name here" required/>
+                        </div>
+
+                        <div class="mb-3 col-md-6">
+                            <label class="form-label">School Location</label>
+                            <input name="location" type="text" class="form-control" placeholder="Enter school location" required/>
+                        </div>
+
+                        <div class="mb-3 col-md-6">
+                            <label class="form-label">School Type</label>
+                            <select name="type" id="" class="form-select" required>
+                                <option value="">Select School Type</option>
+                                <option value="Government">Government</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3 col-md-6">
+                            <label class="form-label">District</label>
+                            <select name="district" id="" class="form-select" required>
+                                <option value="">Select District</option>
+                                <option value="Kasaragod">Kasaragod</option>
+                                <option value="Kannur">Kannur</option>
+                                <option value="Wayanad">Wayanad</option>
+                                <option value="Kozhikode">Kozhikode</option>
+                                <option value="Malappuram">Malappuram</option>
+                                <option value="Palakkad">Palakkad</option>
+                                <option value="Thrissur">Thrissur</option>
+                                <option value="Ernakulam">Ernakulam</option>
+                                <option value="Idukki">Idukki</option>
+                                <option value="Kottayam">Kottayam</option>
+                                <option value="Alappuzha">Alappuzha</option>
+                                <option value="Pathanamthitta">Pathanamthitta</option>
+                                <option value="Kollam">Kollam</option>
+                                <option value="Thiruvananthapuram">Thiruvananthapuram</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3 col-md-6">
+                            <label class="form-label">Sub District</label>
+                            <input name="sub_district" type="text" class="form-control" placeholder="Enter sub district" />
+                        </div>
+
+                        <div class="mb-3 col-md-6 select2-primary">
+                            <label class="form-label" for="">Departments</label>
+                            <select name="departments[]" id="" class="select2 form-select" multiple required>
+                                {% for department in departments %}
+                                    <option value="{{ department.id }}">{{ department.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3 col-md-6">
+                            <label class="form-label">Number of Students</label>
+                            <input name="students" type="number" class="form-control" placeholder="Enter number of students" />
+                        </div>
+
+                        <div class="mb-3 col-md-6">
+                            <label class="form-label">Number of Teachers</label>
+                            <input name="teachers" type="number" class="form-control" placeholder="Enter number of teachers " />
+                        </div>
+
+                        <div class="mb-3 col-md-6">
+                            <label class="form-label">Contact Person</label>
+                            <input name="contact" type="text" class="form-control" placeholder="Enter contact person name " />
+                        </div>
+
+                        <div class="mb-3 col-md-6">
+                            <label class="form-label">Contact Number</label>
+                            <input name="number" type="text" class="form-control" placeholder="Enter contact person number " />
+                        </div>
+
+                        <div class="mb-3 col-md-12">
+                            <label class="form-label">Additional Info</label>
+                            <textarea name="info" id="" class="form-control" cols="5" rows="5" placeholder="Enter additional info"></textarea>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary">SUBMIT</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
