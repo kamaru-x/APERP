@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from Core.models import Department, Lead, FollowUp
+from Core.models import Department, Lead, FollowUp, Booking
 
 # Create your views here.
 
@@ -9,11 +9,15 @@ from Core.models import Department, Lead, FollowUp
 def leads(request):
     leads = Lead.objects.all()
     pending_leads = Lead.objects.filter(status='pending')
+    converted_leads = Lead.objects.filter(status='converted')
+    failed_leads = Lead.objects.filter(status='failed')
 
     context = {
         'main' : 'leads',
         'leads' : leads,
-        'pending_leads' : pending_leads
+        'pending_leads' : pending_leads,
+        'converted_leads' : converted_leads,
+        'failed_leads' : failed_leads
     }
     return render(request,'leads/leads.html',context)
 
@@ -113,6 +117,14 @@ def delete_lead(request,lid):
     return redirect('leads')
 
 @login_required
+def cancel_lead(request,lid):
+    lead = Lead.objects.get(id=lid)
+    lead.status = 'failed'
+    lead.save()
+    messages.warning(request,'Marked lead as failed lead ... !')
+    return redirect('leads')
+
+@login_required
 def add_followup(request,lid):
     lead = Lead.objects.get(id=lid)
 
@@ -135,3 +147,64 @@ def delete_followup(request,fid):
     lead = followup.lead
     followup.delete()
     return redirect('view-lead',lid=lead.id)
+
+@login_required
+def bookings(request):
+    bookings = Booking.objects.all()
+    context = {
+        'main' : 'booking',
+        'bookings' : bookings
+    }
+    return render(request,'booking/bookings.html',context)
+
+@login_required
+def add_booking(request,lid):
+    lead = Lead.objects.get(id=lid)
+
+    if request.method == 'POST':
+        students = request.POST.get('students')
+        teachers = request.POST.get('teachers')
+        date = request.POST.get('date')
+        arrival = request.POST.get('arrival')
+        leaving = request.POST.get('leaving')
+        food = request.POST.get('food')
+        info = request.POST.get('info')
+
+        try:
+            Booking.objects.create(
+                lead=lead,students=students,teachers=teachers,visit_date=date,time_arrival=arrival,
+                time_leave=leaving,food=food,info=info
+            )
+            messages.success(request,'New booking added ... !')
+            return redirect('bookings')
+
+        except Exception as exception:
+            messages.warning(request,str(exception))
+            return redirect('view-lead',lid=lead.id)
+
+@login_required
+def edit_booking(request,bid):
+    booking = Booking.objects.get(id=bid)
+
+    if request.method == 'POST':
+        booking.students = request.POST.get('students')
+        booking.teachers = request.POST.get('teachers')
+        booking.date = request.POST.get('date')
+        booking.time_arrival = request.POST.get('arrival')
+        booking.time_leave = request.POST.get('leaving')
+        booking.food = request.POST.get('food')
+        booking.info = request.POST.get('info')
+
+        try:
+            booking.save()
+            messages.success(request,'Booking Details Edited')
+            return redirect('bookings')
+        except Exception as exception:
+            messages.warning(request,str(exception))
+            return redirect('edit-booking',bid=booking.id)
+
+    context = {
+        'main' : 'booking',
+        'booking' : booking
+    }
+    return render(request,'booking/booking-edit.html',context)

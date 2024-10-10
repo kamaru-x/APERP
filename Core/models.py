@@ -37,7 +37,7 @@ class FollowUp(models.Model):
 
 class Booking(models.Model):
     date = models.DateField(auto_now_add=True)
-    status = models.CharField(max_length=25,default='confirmed')
+    status = models.CharField(max_length=25,default='pending')
 
     lead = models.ForeignKey(Lead,on_delete=models.CASCADE)
     students = models.IntegerField()
@@ -48,6 +48,7 @@ class Booking(models.Model):
     time_leave = models.TimeField(null=True,blank=True)
 
     food = models.CharField(max_length=50,null=True,blank=True)
+    info = models.TextField(null=True,blank=True)
 
     def __str__(self):
         return self.lead.name

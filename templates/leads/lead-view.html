@@ -57,24 +57,25 @@
         </div>
         <!--/ About User -->
         <!-- Profile Overview -->
-        <div class="card mb-4">
-          <div class="card-body">
-            <select class="form-control">
-              <option value="PENDING" class="bg-warning">PENDING</option>
-            </select>
+        {% if lead.status == 'pending' %}
+          <div class="card mb-4">
+            <div class="card-body">
+              <select class="form-control">
+                <option value="PENDING" class="bg-warning">PENDING</option>
+              </select>
+            </div>
           </div>
-        </div>
-
-        <div class="card mb-4">
-          <div class="card-body">
-            <div class="row">
-              <div class="d-grid gap-2 col-12 mx-auto">
-                <button class="btn btn-success btn" type="button">CONFIRM BOOKING</button>
-                <button class="btn btn-danger btn" type="button">MARK AS FAILED</button>
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="row">
+                <div class="d-grid gap-2 col-12 mx-auto">
+                  <button class="btn btn-success btn" type="button" data-bs-toggle="modal" data-bs-target="#ConfirmBookingModal">CONFIRM BOOKING</button>
+                  <a href="{% url 'cancel-lead' lead.id %}" onclick="return confirm('Are you sure you want to mark the lead as failed lead ?');" class="btn btn-danger btn" type="button">MARK AS FAILED</a>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        {% endif %}
         <!--/ Profile Overview -->
       </div>
       <div class="col-xl-8 col-lg-7 col-md-7">
@@ -106,7 +107,7 @@
                       </div>
                       <div class="d-flex flex-column text-start text-lg-end">
                         <div class="d-flex order-sm-0 order-1">
-                          <a href="{% url 'delete-followup' followup.id %}" class="btn btn-danger">
+                          <a href="{% url 'delete-followup' followup.id %}" onclick="return confirm('Are you sure you want to delete the follow up ?');" class="btn btn-danger">
                             <i class="bx bx-trash-alt"></i>
                           </a>
                         </div>
@@ -162,6 +163,80 @@
               <div class="col-12 col-md-12">
                 <label class="form-label">Details</label>
                 <textarea name="details" id="" class="form-control" rows="5" placeholder="Enter follow up details"></textarea>
+              </div>
+              <div class="col-12 text-center">
+                <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>
+                <button
+                  type="reset"
+                  class="btn btn-label-secondary btn-reset mt-3"
+                  data-bs-dismiss="modal"
+                  aria-label="Close">
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/ Add New Credit Card Modal -->
+
+    <!-- Add New Credit Card Modal -->
+    <div class="modal fade" id="ConfirmBookingModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc modal-xl">
+        <div class="modal-content p-3 p-md-5">
+          <div class="modal-body">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="text-center mb-4">
+              <h3>CONFIRM BOOKING</h3>
+            </div>
+            <form id="addNewCCForm" class="row g-3" method="post" action="{% url 'add-booking' lead.id %}">
+              {% csrf_token %}
+              <div class="col-12 col-md-6">
+                <label class="form-label">Students</label>
+                <div class="input-group input-group-merge">
+                  <input name="students" class="form-control credit-card-mask" type="number" placeholder="Enter number of students" aria-describedby="modalAddCard2" />
+                </div>
+              </div>
+
+              <div class="col-12 col-md-6">
+                <label class="form-label">Teachers</label>
+                <div class="input-group input-group-merge">
+                  <input name="teachers" class="form-control credit-card-mask" type="number" placeholder="Enter number of teachers" aria-describedby="modalAddCard2" />
+                </div>
+              </div>
+
+              <div class="col-12 col-md-6">
+                <label class="form-label">Visiting Date</label>
+                <div class="input-group input-group-merge">
+                  <input name="date" class="form-control credit-card-mask" type="date" aria-describedby="modalAddCard2" />
+                </div>
+              </div>
+
+              <div class="col-12 col-md-6">
+                <label class="form-label">Expected Arriving Time</label>
+                <div class="input-group input-group-merge">
+                  <input name="arrival" class="form-control credit-card-mask" type="time" aria-describedby="modalAddCard2" />
+                </div>
+              </div>
+
+              <div class="col-12 col-md-6">
+                <label class="form-label">Expected Leaving Time</label>
+                <div class="input-group input-group-merge">
+                  <input name="leaving" class="form-control credit-card-mask" type="time" aria-describedby="modalAddCard2" />
+                </div>
+              </div>
+
+              <div class="col-12 col-md-6">
+                <label class="form-label">Food Type</label>
+                <div class="input-group input-group-merge">
+                  <input name="food" class="form-control credit-card-mask" type="text" placeholder="Enter food type" aria-describedby="modalAddCard2" />
+                </div>
+              </div>
+
+              <div class="col-12 col-md-12">
+                <label class="form-label">Additional Info</label>
+                <textarea name="info" id="" class="form-control" rows="5" placeholder="Enter additional info"></textarea>
               </div>
               <div class="col-12 text-center">
                 <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>
