@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from Authentication.models import Source, Group, User
 from Core.models import Department, Lead, FollowUp, Booking
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -118,6 +119,9 @@ def leads(request):
 @login_required
 def add_lead(request):
     departments = Department.objects.all()
+    sources = Source.objects.all()
+    groups = Group.objects.all()
+    staffs = User.objects.exclude(is_superuser=True)
 
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -128,7 +132,7 @@ def add_lead(request):
         departments = request.POST.getlist('departments[]')
         students = request.POST.get('students')
         teachers = request.POST.get('teachers')
-        contact = request.POST.get('contact')
+        primary_contact = request.POST.get('contact')
         number = request.POST.get('number')
         info = request.POST.get('info')
 
@@ -149,7 +153,10 @@ def add_lead(request):
 
     context = {
         'main' : 'leads',
-        'departments' : departments
+        'departments' : departments,
+        'sources' : sources,
+        'groups' : groups,
+        'staffs' : staffs
     }
 
     return render(request,'leads/lead-add.html',context)
@@ -302,3 +309,18 @@ def edit_booking(request,id):
         'booking' : booking
     }
     return render(request,'booking/booking-edit.html',context)
+
+def filter_staff(request):
+    group_id = request.GET.get('group_id')
+
+    if group_id:
+        staff_list = User.objects.filter(group_id=group_id)
+    else:
+        staff_list = User.objects.none()
+
+    staff_data = [
+        {'id': staff.id, 'name': f"{staff.first_name} {staff.last_name}"}
+        for staff in staff_list
+    ]
+
+    return JsonResponse({'staff': staff_data})

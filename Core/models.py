@@ -1,5 +1,5 @@
 from django.db import models
-from Authentication.models import User
+from Authentication.models import Source, Group, User
 
 # Create your models here.
 
@@ -28,10 +28,13 @@ class Lead(models.Model):
     departments = models.ManyToManyField(Department)
     students = models.IntegerField(null=True, blank=True)
     teachers = models.IntegerField(null=True, blank=True)
-    contact_name = models.CharField(max_length=50,null=True,blank=True)
-    contact_number = models.CharField(max_length=15,null=True,blank=True)
-    alt_name = models.CharField(max_length=50,null=True,blank=True)
-    alt_number = models.CharField(max_length=15,null=True,blank=True)
+    primary_name = models.CharField(max_length=50,null=True,blank=True)
+    primary_number = models.CharField(max_length=15,null=True,blank=True)
+    secondary_name = models.CharField(max_length=50,null=True,blank=True)
+    secondary_number = models.CharField(max_length=15,null=True,blank=True)
+    source = models.ForeignKey(Source,on_delete=models.SET_NULL,null=True)
+    group = models.ForeignKey(Group,on_delete=models.SET_NULL,null=True)
+    staff = models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
     info = models.TextField()
 
     def __str__(self):

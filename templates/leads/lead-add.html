@@ -75,13 +75,53 @@
                         </div>
 
                         <div class="mb-3 col-md-6">
-                            <label class="form-label">Contact Person</label>
-                            <input name="contact" type="text" class="form-control" placeholder="Enter contact person name " />
+                            <label class="form-label">Primary Person</label>
+                            <input name="primary_name" type="text" class="form-control" placeholder="Enter contact person name " />
                         </div>
 
                         <div class="mb-3 col-md-6">
-                            <label class="form-label">Contact Number</label>
-                            <input name="number" type="text" class="form-control" placeholder="Enter contact person number " />
+                            <label class="form-label">Primary Number</label>
+                            <input name="primary_number" type="text" class="form-control" placeholder="Enter contact person number " />
+                        </div>
+
+                        <div class="mb-3 col-md-6">
+                            <label class="form-label">Secondery Person</label>
+                            <input name="secodery_name" type="text" class="form-control" placeholder="Enter contact person name " />
+                        </div>
+
+                        <div class="mb-3 col-md-6">
+                            <label class="form-label">Secondery Number</label>
+                            <input name="secodery_number" type="text" class="form-control" placeholder="Enter contact person number " />
+                        </div>
+
+                        <div class="mb-3 col-md-6">
+                            <label class="form-label">Source</label>
+                            <select name="source" id="source" class="form-control" required>
+                                <option value="">Select Lead Source</option>
+                                {% for source in sources %}
+                                    <option value="{{ source.id }}">{{ source.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3 col-md-6" id="group-container" style="display: none;">
+                            <label class="form-label">Group</label>
+                            <select name="group" id="group" class="form-control">
+                                <option value="">Select Group</option>
+                                {% for group in groups %}
+                                    <option value="{{ group.id }}">{{ group.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3 col-md-6" id="staff-container" style="display: none;">
+                            <label class="form-label">Staff</label>
+                            <select name="staff" id="staff" class="form-control">
+                                <option value="">Select Staff</option>
+                                {% for staff in staffs %}
+                                    <option value="{{ staff.id }}">{{ staff.first_name }} {{ staff.last_name }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
 
                         <div class="mb-3 col-md-12">
@@ -97,4 +137,44 @@
         </div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function(){
+        $('#source').on('change', function(){
+            var source = $(this).val();
+
+            if (source == '1'){
+                $('#group-container').show();
+                $('#staff-container').show();
+            } else {
+                $('#group-container').hide();
+                $('#staff-container').hide();
+            }
+        });
+
+        $('#group').on('change', function(){
+            var group_id = $(this).val();
+
+            if(group_id) {
+                $.ajax({
+                    url: '{% url "filter-staff" %}',
+                    data: {
+                        'group_id': group_id
+                    },
+                    success: function(response) {
+                        $('#staff').empty();
+                        $('#staff').append('<option value="">Select Staff</option>');
+
+                        $.each(response.staff, function(index, staff) {
+                            $('#staff').append('<option value="'+staff.id+'">'+staff.name+'</option>');
+                        });
+                    }
+                });
+            } else {
+                $('#staff').empty();
+                $('#staff').append('<option value="">Select Staff</option>');
+            }
+        });
+    });
+</script>
 {% endblock content %}
