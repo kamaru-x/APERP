@@ -132,6 +132,36 @@
               </a>
             </li>
 
+            <li class="menu-header small text-uppercase">
+              <span class="menu-header-text" data-i18n="Masters">Masters</span>
+            </li>
+
+            <li class="menu-item {% if main == 'source' %} active {% endif %}">
+              <a href="{% url 'source' %}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-user"></i>
+                <div class="text-truncate" data-i18n="Source">Source</div>
+              </a>
+            </li>
+
+            <li class="menu-item {% if main == 'groups' %} active {% endif %}">
+              <a href="{% url 'groups' %}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-user"></i>
+                <div class="text-truncate" data-i18n="Groups">Groups</div>
+              </a>
+            </li>
+
+            <li class="menu-item {% if main == 'staffs' %} active {% endif %}">
+              <a href="{% url 'staffs' %}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-user"></i>
+                <div class="text-truncate" data-i18n="Staffs">Staffs</div>
+              </a>
+            </li>
+
+            <!-- Apps & Pages -->
+            <li class="menu-header small text-uppercase">
+              <span class="menu-header-text" data-i18n="Leads & Booking">Leads &amp; Booking</span>
+            </li>
+
             <li class="menu-item {% if main == 'leads' %} active {% endif %}">
               <a href="{% url 'leads' %}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-chat"></i>
@@ -161,11 +191,6 @@
                 </li>
               </ul>
             </li> -->
-
-            <!-- Apps & Pages -->
-            <li class="menu-header small text-uppercase">
-              <span class="menu-header-text" data-i18n="Apps & Pages">Apps &amp; Pages</span>
-            </li>
 
             <!-- <li class="menu-item">
               <a href="" class="menu-link">
@@ -255,7 +280,7 @@
                       <div class="dropdown-divider"></div>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="{% url 'sign-out' %}" target="_blank">
+                      <a class="dropdown-item" href="{% url 'sign-out' %}">
                         <i class="bx bx-power-off me-2"></i>
                         <span class="align-middle">Log Out</span>
                       </a>

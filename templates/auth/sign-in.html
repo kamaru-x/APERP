@@ -100,7 +100,9 @@
                   </div>
                 </div>
                 {% if messages %}
+                  {% for message in messages %}
                     <p class="text-danger text-center">Incorrect Username or Password</p>
+                  {% endfor %}
                 {% endif %}
                 <div class="mb-3">
                   <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>

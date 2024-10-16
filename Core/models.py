@@ -1,6 +1,14 @@
 from django.db import models
+from Authentication.models import User
 
 # Create your models here.
+
+LEAD_STATUS = (
+    ('HOT','HOT'),
+    ('NORMAL','NORMAL'),
+    ('COLD','COLD'),
+    ('DEAD','DEAD'),
+)
 
 class Department(models.Model):
     name = models.CharField(max_length=20)
@@ -10,17 +18,20 @@ class Department(models.Model):
 
 class Lead(models.Model):
     date = models.DateField(auto_now_add=True)
-    status = models.CharField(max_length=50,default='pending')
+    status = models.CharField(max_length=50,default='PENDING')
+    lead_type = models.CharField(max_length=25,choices=LEAD_STATUS,default='NORMAL')
     name = models.CharField(max_length=150)
     location = models.CharField(max_length=50)
     type = models.CharField(max_length=50)
     district = models.CharField(max_length=50)
     sub_district = models.CharField(max_length=50)
-    departments = models.ManyToManyField('Department')
+    departments = models.ManyToManyField(Department)
     students = models.IntegerField(null=True, blank=True)
     teachers = models.IntegerField(null=True, blank=True)
     contact_name = models.CharField(max_length=50,null=True,blank=True)
     contact_number = models.CharField(max_length=15,null=True,blank=True)
+    alt_name = models.CharField(max_length=50,null=True,blank=True)
+    alt_number = models.CharField(max_length=15,null=True,blank=True)
     info = models.TextField()
 
     def __str__(self):
