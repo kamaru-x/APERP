@@ -3,6 +3,16 @@
 
 {% block content %}
 <div class="container-xxl flex-grow-1 container-p-y">
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
     <h4 class="py-3 mb-4 text-center"> {{ lead.name }}</h4>
 
     <!-- User Profile Content -->
@@ -41,27 +51,56 @@
             <small class="text-muted text-uppercase">Contacts</small>
             <ul class="list-unstyled mb-4 mt-3">
                 <li class="d-flex align-items-center mb-3">
-                    <i class="bx bx-user"></i><span class="fw-medium mx-2">Contact Name :</span>
-                    <span>{{ lead.contact_name }}</span>
+                    <i class="bx bx-user"></i><span class="fw-medium mx-2">Primary Name :</span>
+                    <span>{{ lead.primary_name }}</span>
                 </li>
                 <li class="d-flex align-items-center mb-3">
-                    <i class="bx bx-phone"></i><span class="fw-medium mx-2">Contact Number :</span>
-                    <span>{{ lead.contact_number }}</span>
+                    <i class="bx bx-phone"></i><span class="fw-medium mx-2">Primary Number :</span>
+                    <span>{{ lead.primary_number }}</span>
                 </li>
-                <!-- <li class="d-flex align-items-center mb-3">
-                    <i class="bx bx-envelope"></i><span class="fw-medium mx-2">Email :</span>
-                    <span>connect@kamaru.me</span>
-                </li> -->
+
+                <li class="d-flex align-items-center mb-3">
+                  <i class="bx bx-user"></i><span class="fw-medium mx-2">Secondary Name :</span>
+                  <span>{{ lead.secondary_name }}</span>
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                  <i class="bx bx-phone"></i><span class="fw-medium mx-2">Secondary Number :</span>
+                  <span>{{ lead.secondary_number }}</span>
+              </li>
             </ul>
+            <small class="text-muted text-uppercase">Came Through</small>
+            <ul class="list-unstyled mb-4 mt-3">
+              <li class="d-flex align-items-center mb-3">
+                  <i class="bx bx-list-ul"></i><span class="fw-medium mx-2">Source :</span>
+                  <span>{{ lead.source.name }}</span>
+              </li>
+
+              {% if lead.group %}
+                <li class="d-flex align-items-center mb-3">
+                    <i class="bx bx-list-ul"></i><span class="fw-medium mx-2">Group :</span>
+                    <span>{{ lead.group.name }}</span>
+                </li>
+              {% endif %}
+
+              {% if lead.staff %}
+                <li class="d-flex align-items-center mb-3">
+                    <i class="bx bx-list-ul"></i><span class="fw-medium mx-2">Staff :</span>
+                    <span>{{ lead.staff }}</span>
+                </li>
+              {% endif %}
+          </ul>
           </div>
         </div>
         <!--/ About User -->
         <!-- Profile Overview -->
-        {% if lead.status == 'pending' %}
+        {% if lead.status == 'PENDING' %}
           <div class="card mb-4">
             <div class="card-body">
-              <select class="form-control">
-                <option value="PENDING" class="bg-warning">PENDING</option>
+              <select class="form-control" id="lead_type">
+                <option value="{{ lead.lead_type }}">{{ lead.lead_type }}</option>
+                <option value="DEAD" class="text-muted">DEAD</option>
+                <option value="COLD" class="text-primary">COLD</option>
+                <option value="HOT" class="text-danger">HOT</option>
               </select>
             </div>
           </div>
@@ -92,6 +131,11 @@
                 data-bs-target="#addNewCCModal">
                 <i class="bx bx-plus bx-xs me-1"></i>ADD FOLLOW UP
               </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="cardMaster border p-2 pt-4 rounded">
+              <h4 class="text-center text-primary">NEXT FOLLOW UP ON {{ followup.next_date | date:'d F Y' | upper }}</h4>
             </div>
           </div>
           <div class="card-body">
@@ -163,6 +207,10 @@
               <div class="col-12 col-md-12">
                 <label class="form-label">Details</label>
                 <textarea name="details" id="" class="form-control" rows="5" placeholder="Enter follow up details"></textarea>
+              </div>
+              <div class="col-12 col-md-12">
+                <label class="form-label">NEXT FOLLOWUP DATE</label>
+                <input type="date" name="next-date" id="" class="form-control">
               </div>
               <div class="col-12 text-center">
                 <button type="submit" class="btn btn-primary me-sm-3 me-1 mt-3">Submit</button>
@@ -255,4 +303,28 @@
     </div>
     <!--/ Add New Credit Card Modal -->
 </div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script>
+  $(document).ready(function(){
+    $('#lead_type').on('change' , function(){
+      var lead_type = $('#lead_type').val();
+
+      $.ajax({
+        url: '{% url "update-lead-type" lead.id %}',
+        method: 'POST',
+        data: {
+          'lead_type': lead_type,
+          'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function(response) {
+          console.log('Lead type updated:', response);
+        },
+        error: function(xhr, errmsg, err) {
+          console.log('Error:', errmsg);
+        }
+      });
+    });
+  });
+</script>
 {% endblock content %}

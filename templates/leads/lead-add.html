@@ -3,6 +3,16 @@
 
 {% block content %}
 <div class="container-xxl flex-grow-1 container-p-y">
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+
     <div class="col-12">
         <div class="card mb-4">
             <h3 class="text-center fw-medium mt-5">ADD LEAD</h3>
@@ -85,13 +95,13 @@
                         </div>
 
                         <div class="mb-3 col-md-6">
-                            <label class="form-label">Secondery Person</label>
-                            <input name="secodery_name" type="text" class="form-control" placeholder="Enter contact person name " />
+                            <label class="form-label">Secondary Person</label>
+                            <input name="secondary_name" type="text" class="form-control" placeholder="Enter contact person name " />
                         </div>
 
                         <div class="mb-3 col-md-6">
-                            <label class="form-label">Secondery Number</label>
-                            <input name="secodery_number" type="text" class="form-control" placeholder="Enter contact person number " />
+                            <label class="form-label">Secondary Number</label>
+                            <input name="secondary_number" type="text" class="form-control" placeholder="Enter contact person number " />
                         </div>
 
                         <div class="mb-3 col-md-6">

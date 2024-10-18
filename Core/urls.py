@@ -18,6 +18,7 @@ urlpatterns = [
     path('lead/edit/<int:id>/',views.edit_lead,name='edit-lead'),
     path('lead/delete/<int:id>/',views.delete_lead,name='delete-lead'),
     path('lead/cancel/<int:id>/',views.cancel_lead,name='cancel-lead'),
+    path('update-lead-type/<int:id>/', views.update_lead_type, name='update-lead-type'),
 
     path('followup/add/<int:id>/',views.add_followup,name='add-followup'),
     path('followup/delete/<int:id>/',views.delete_followup,name='delete-followup'),

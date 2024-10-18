@@ -43,6 +43,7 @@ class Lead(models.Model):
 class FollowUp(models.Model):
     lead = models.ForeignKey(Lead,on_delete=models.CASCADE)
     date = models.DateField(auto_now_add=True)
+    next_date = models.DateField(null=True)
     title = models.CharField(max_length=50)
     details = models.TextField(null=True,blank=True)
 

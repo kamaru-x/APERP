@@ -132,14 +132,24 @@ def add_lead(request):
         departments = request.POST.getlist('departments[]')
         students = request.POST.get('students')
         teachers = request.POST.get('teachers')
-        primary_contact = request.POST.get('contact')
-        number = request.POST.get('number')
+        primary_name = request.POST.get('primary_name')
+        primary_number = request.POST.get('primary_number')
+        secondary_name = request.POST.get('secondary_name')
+        secondary_number = request.POST.get('secondary_number')
+        source = request.POST.get('source')
+        group = request.POST.get('group')
+        staff = request.POST.get('staff')
         info = request.POST.get('info')
 
         try:
+            source = Source.objects.get(id=source)
+            group = Group.objects.get(id=group)
+            staff = User.objects.get(id=staff)
+
             lead = Lead.objects.create(
                 name=name,location=location,type=type,district=district,sub_district=sub_district,
-                students=students,teachers=teachers,info=info,contact_name=contact,contact_number=number
+                students=students,teachers=teachers,info=info,primary_name=primary_name,primary_number=primary_number,
+                secondary_name=secondary_name,secondary_number=secondary_number,source=source,group=group,staff=staff
             )
 
             lead.departments.set(departments)
@@ -166,11 +176,13 @@ def view_lead(request,id):
     departments = Department.objects.all()
     lead = Lead.objects.get(id=id)
     followups = FollowUp.objects.filter(lead=lead).order_by('-id')
+    followup = FollowUp.objects.filter(lead=lead).order_by('id').last()
     context = {
         'main' : 'leads',
         'departments' : departments,
         'lead' : lead,
-        'followups' : followups
+        'followups' : followups,
+        'followup' : followup
     }
     return render(request,'leads/lead-view.html',context)
 
@@ -178,6 +190,9 @@ def view_lead(request,id):
 def edit_lead(request,id):
     departments = Department.objects.all()
     lead = Lead.objects.get(id=id)
+    sources = Source.objects.all()
+    groups = Group.objects.all()
+    staffs = User.objects.exclude(is_superuser=True)
 
     if request.method == 'POST':
         deps = request.POST.getlist('departments[]')
@@ -188,13 +203,27 @@ def edit_lead(request,id):
         lead.sub_district = request.POST.get('sub_district')
         lead.students = request.POST.get('students')
         lead.teachers = request.POST.get('teachers')
-        lead.contact_name = request.POST.get('contact')
-        lead.contact_number = request.POST.get('number')
+        lead.primary_name = request.POST.get('primary_name')
+        lead.primary_number = request.POST.get('primary_number')
+        lead.secondary_name = request.POST.get('secondary_name')
+        lead.secondary_number = request.POST.get('secondary_number')
         lead.info = request.POST.get('info')
+
+        source = request.POST.get('source')
+        group = request.POST.get('group')
+        staff = request.POST.get('staff')
 
         lead.departments.set(deps)
 
         try:
+            source = Source.objects.get(id=source)
+            group = Group.objects.get(id=group)
+            staff = User.objects.get(id=staff)
+
+            lead.source = source
+            lead.group = group
+            lead.staff = staff
+
             lead.save()
             messages.success(request,'Lead details edited successfully ... !')
             return redirect('leads')
@@ -206,7 +235,10 @@ def edit_lead(request,id):
     context = {
         'main' : 'leads',
         'departments' : departments,
-        'lead' : lead
+        'lead' : lead,
+        'sources' : sources,
+        'groups' : groups,
+        'staffs' : staffs
     }
     return render(request,'leads/lead-edit.html',context)
 
@@ -225,6 +257,18 @@ def cancel_lead(request,id):
     messages.warning(request,'Marked lead as failed lead ... !')
     return redirect('leads')
 
+def update_lead_type(request,id):
+    if request.method == 'POST':
+        lead_type = request.POST.get('lead_type')
+
+        lead = Lead.objects.get(id=id)
+        lead.lead_type = lead_type
+        lead.save()
+
+        return JsonResponse({'status': 'success', 'lead_type': lead_type})
+
+    return JsonResponse({'status': 'error'}, status=400)
+
 @login_required
 def add_followup(request,id):
     lead = Lead.objects.get(id=id)
@@ -232,9 +276,10 @@ def add_followup(request,id):
     if request.method == 'POST':
         title = request.POST.get('title')
         details = request.POST.get('details')
+        next_date = request.POST.get('next-date')
 
         try:
-            FollowUp.objects.create(lead=lead,title=title,details=details)
+            FollowUp.objects.create(lead=lead,title=title,details=details,next_date=next_date)
             messages.success(request,'follow up added successfully ... !')
 
         except Exception as exception:
