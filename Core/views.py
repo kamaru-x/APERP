@@ -4,6 +4,8 @@ from django.contrib import messages
 from Authentication.models import Source, Group, User
 from Core.models import Department, Lead, FollowUp, Booking
 from django.http import JsonResponse
+from datetime import datetime
+today = datetime.now().date()
 
 # Create your views here.
 
@@ -49,7 +51,7 @@ def delete_source(request,id):
     source = Source.objects.get(id=id)
     source.delete()
 
-    messages.error(request,'Source deleted successfully ... !')
+    messages.warning(request,'Source deleted successfully ... !')
 
     return redirect('source')
 
@@ -96,7 +98,7 @@ def delete_group(request,id):
     group = Group.objects.get(id=id)
     group.delete()
 
-    messages.error(request,'Group deleted successfully ... !')
+    messages.warning(request,'Group deleted successfully ... !')
 
     return redirect('groups')
 
@@ -267,7 +269,7 @@ def update_lead_type(request,id):
 
         return JsonResponse({'status': 'success', 'lead_type': lead_type})
 
-    return JsonResponse({'status': 'error'}, status=400)
+    return JsonResponse({'status': 'warning'}, status=400)
 
 @login_required
 def add_followup(request,id):
@@ -296,10 +298,12 @@ def delete_followup(request,id):
 
 @login_required
 def bookings(request):
-    bookings = Booking.objects.all()
+    today_bookings = Booking.objects.filter(date=today)
+    other_bookings = Booking.objects.exclude(date=today)
     context = {
         'main' : 'booking',
-        'bookings' : bookings
+        'today_bookings' : today_bookings,
+        'other_bookings' : other_bookings
     }
     return render(request,'booking/bookings.html',context)
 
@@ -369,3 +373,21 @@ def filter_staff(request):
     ]
 
     return JsonResponse({'staff': staff_data})
+
+@login_required
+def booking_details(request,id):
+    booking = Booking.objects.get(id=id)
+    context = {
+        'main' : 'booking',
+        'booking' : booking
+    }
+    return render(request,'booking/booking-details.html',context)
+
+@login_required
+def print_booking(request):
+    bookings = Booking.objects.filter(date=today)
+    context = {
+        'bookings' : bookings,
+        'today' : today
+    }
+    return render(request,'booking/booking-print.html',context)

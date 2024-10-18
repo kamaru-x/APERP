@@ -124,18 +124,16 @@
           <div class="card-header align-items-center">
             <h5 class="card-action-title mb-0">Follow ups</h5>
             <div class="card-action-element">
-              <button
-                class="btn btn-primary btn-sm"
-                type="button"
-                data-bs-toggle="modal"
-                data-bs-target="#addNewCCModal">
-                <i class="bx bx-plus bx-xs me-1"></i>ADD FOLLOW UP
-              </button>
+              <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#addNewCCModal" {% if not lead.status == 'PENDING' %} disabled {% endif %}><i class="bx bx-plus bx-xs me-1"></i>ADD FOLLOW UP</button>
             </div>
           </div>
           <div class="card-body">
             <div class="cardMaster border p-2 pt-4 rounded">
-              <h4 class="text-center text-primary">NEXT FOLLOW UP ON {{ followup.next_date | date:'d F Y' | upper }}</h4>
+              {% if followup.next_date %}
+                <h4 class="text-center text-primary">NEXT FOLLOW UP ON {{ followup.next_date | date:'d F Y' | upper }}</h4>
+              {% else %}
+                <h4 class="text-center text-primary">NO MORE FOLLOW UPS</h4>
+              {% endif %}
             </div>
           </div>
           <div class="card-body">
@@ -149,13 +147,15 @@
                         <h6 class="mb-3">{{ followup.title }}</h6>
                         <p>{{ followup.details }}</p>
                       </div>
-                      <div class="d-flex flex-column text-start text-lg-end">
-                        <div class="d-flex order-sm-0 order-1">
-                          <a href="{% url 'delete-followup' followup.id %}" onclick="return confirm('Are you sure you want to delete the follow up ?');" class="btn btn-danger">
-                            <i class="bx bx-trash-alt"></i>
-                          </a>
+                      {% if lead.status == 'PENDING' %}
+                        <div class="d-flex flex-column text-start text-lg-end">
+                          <div class="d-flex order-sm-0 order-1">
+                            <a href="{% url 'delete-followup' followup.id %}" onclick="return confirm('Are you sure you want to delete the follow up ?');" class="btn btn-danger">
+                              <i class="bx bx-trash-alt"></i>
+                            </a>
+                          </div>
                         </div>
-                      </div>
+                      {% endif %}
                     </div>
                   </div>
                 {% endfor %}

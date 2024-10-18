@@ -26,6 +26,8 @@ urlpatterns = [
     path('bookings/',views.bookings,name='bookings'),
     path('booking/add/<int:id>/',views.add_booking,name='add-booking'),
     path('booking/edit/<int:id>/',views.edit_booking,name='edit-booking'),
+    path('booking/details/<int:id>/',views.booking_details,name='view-booking'),
+    path('booking/print/',views.print_booking,name='print-booking'),
 
     path('filter-staff/', views.filter_staff, name='filter-staff'),
 ]

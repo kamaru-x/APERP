@@ -98,6 +98,7 @@
                             <th class="fw-bold">SCHOOL</th>
                             <th class="fw-bold">PLACE</th>
                             <th class="fw-bold">DISTRICT</th>
+                            <th class="fw-bold">TYPE</th>
                             <th class="fw-bold">STATUS</th>
                             <th class="fw-bold">ACTIONS</th>
                         </tr>
@@ -123,6 +124,15 @@
                                 {% elif lead.lead_type == 'HOT' %}
                                   <span class="badge bg-label-danger me-1">{{ lead.lead_type }}</span>
                                 {% endif %}
+                              </td>
+                              <td>
+                                  {% if lead.status == 'PENDING' %}
+                                    <span class="badge bg-label-warning me-1">{{ lead.status }}</span>
+                                  {% elif lead.status == 'FAILED' %}
+                                    <span class="badge bg-label-danger me-1">{{ lead.status }}</span>
+                                  {% elif lead.status == 'CONVERTED' %}
+                                    <span class="badge bg-label-primary me-1">{{ lead.status }}</span>
+                                  {% endif %}
                               </td>
                               <td>
                                   <div class="dropdown">
