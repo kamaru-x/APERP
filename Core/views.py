@@ -281,7 +281,7 @@ def delete_lead(request,id):
 @login_required
 def cancel_lead(request,id):
     lead = Lead.objects.get(id=id)
-    lead.status = 'failed'
+    lead.status = 'FAILED'
     lead.save()
     messages.warning(request,'Marked lead as failed lead ... !')
     return redirect('leads')
