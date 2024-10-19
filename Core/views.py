@@ -104,7 +104,7 @@ def delete_group(request,id):
 
 @login_required
 def leads(request):
-    leads = Lead.objects.all()
+    leads = Lead.objects.all().order_by('-id')
     pending_leads = Lead.objects.filter(status='pending')
     converted_leads = Lead.objects.filter(status='converted')
     failed_leads = Lead.objects.filter(status='failed')
@@ -144,9 +144,20 @@ def add_lead(request):
         info = request.POST.get('info')
 
         try:
-            source = Source.objects.get(id=source)
-            group = Group.objects.get(id=group)
-            staff = User.objects.get(id=staff)
+            if source:
+                source = Source.objects.get(id=source)
+            else:
+                source = None
+
+            if group:
+                group = Group.objects.get(id=group)
+            else:
+                group = None
+
+            if staff:
+                staff = User.objects.get(id=staff)
+            else:
+                staff = None
 
             lead = Lead.objects.create(
                 name=name,location=location,type=type,district=district,sub_district=sub_district,
@@ -218,13 +229,29 @@ def edit_lead(request,id):
         lead.departments.set(deps)
 
         try:
-            source = Source.objects.get(id=source)
-            group = Group.objects.get(id=group)
-            staff = User.objects.get(id=staff)
+            if source:
+                source = Source.objects.get(id=source)
+            else:
+                source = None
+
+            if group:
+                group = Group.objects.get(id=group)
+            else:
+                group = None
+
+            if staff:
+                staff = User.objects.get(id=staff)
+            else:
+                staff = None
 
             lead.source = source
-            lead.group = group
-            lead.staff = staff
+
+            if source.id == 1:
+                lead.group = group
+                lead.staff = staff
+            else:
+                lead.group = None
+                lead.staff = None
 
             lead.save()
             messages.success(request,'Lead details edited successfully ... !')
@@ -299,7 +326,7 @@ def delete_followup(request,id):
 @login_required
 def bookings(request):
     today_bookings = Booking.objects.filter(date=today)
-    other_bookings = Booking.objects.exclude(date=today)
+    other_bookings = Booking.objects.exclude(date=today).order_by('date')
     context = {
         'main' : 'booking',
         'today_bookings' : today_bookings,
@@ -319,6 +346,9 @@ def add_booking(request,id):
         leaving = request.POST.get('leaving')
         food = request.POST.get('food')
         info = request.POST.get('info')
+
+        lead.status = 'CONVERTED'
+        lead.save()
 
         try:
             Booking.objects.create(
